@@ -1,4 +1,8 @@
 package tesis.productservices.models;
 
-public enum Marca {
+public class Marca {
+
+    private Long id;
+    private String name;
+
 }

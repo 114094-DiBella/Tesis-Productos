@@ -1,5 +1,8 @@
 package tesis.productservices.models;
 
-public enum Category {
+public class Category {
+
+    private Long id;
+    private String name;
 
 }
