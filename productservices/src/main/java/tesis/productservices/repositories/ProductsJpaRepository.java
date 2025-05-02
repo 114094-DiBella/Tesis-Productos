@@ -3,6 +3,8 @@ package tesis.productservices.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import tesis.productservices.entities.CategoryEntity;
+import tesis.productservices.entities.MarcaEntity;
 import tesis.productservices.entities.ProductsEntity;
 import tesis.productservices.models.Category;
 import tesis.productservices.models.Marca;
@@ -15,10 +17,10 @@ import java.util.UUID;
 public interface ProductsJpaRepository extends JpaRepository<ProductsEntity, UUID> {
     boolean existsByNameAndMarcaAndSizeAndColorAndCategoryAndPrice(
             String name,
-            Marca marca,
+            MarcaEntity marca,
             Size size,
             String color,
-            Category category,
+            CategoryEntity category,
             BigDecimal price
     );
 
