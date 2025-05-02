@@ -14,6 +14,7 @@ import tesis.productservices.repositories.MarcaJpaRepository;
 import tesis.productservices.services.MarcaService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,30 +52,34 @@ public class MarcaServiceImpl implements MarcaService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Marca save(MarcaRequest marca) {
-        if (marcaJpaRepository.findByName(marca.getName())){
-            throw new RuntimeException("Marca with name " + marca.getName() + " already exists");
+        if (marca == null) {
+            throw new RuntimeException("Marca request cannot be null");
         }
         MarcaEntity marcaEntity = modelMapper.map(marca, MarcaEntity.class);
         marcaJpaRepository.save(marcaEntity);
-        return modelMapper.map(marcaEntity, Marca.class);
+        Marca marcaSaved = modelMapper.map(marcaEntity, Marca.class);
+        return marcaSaved;
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Marca update(MarcaRequest marca, Long id) {
+
         MarcaEntity existingEntity = marcaJpaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Marca with id " + id + " does not exist"));
 
-        if (!existingEntity.getName().equals(marca.getName()) &&
-                marcaJpaRepository.findByName(marca.getName())) {
-            throw new IllegalStateException("Marca with name " + marca.getName() + " already exists");
+        if (!existingEntity.getName().equals(marca.getName())) {
+            Optional<MarcaEntity> entityWithSameName = marcaJpaRepository.findByName(marca.getName());
+            if (entityWithSameName.isPresent() && !entityWithSameName.get().getId().equals(id)) {
+                throw new IllegalStateException("Marca with name " + marca.getName() + " already exists");
+            }
         }
 
-        MarcaEntity marcaEntity = modelMapper.map(marca, MarcaEntity.class);
-        marcaJpaRepository.save(marcaEntity);
-        return modelMapper.map(marcaEntity, Marca.class);
+        existingEntity.setName(marca.getName());
+
+        MarcaEntity updatedEntity = marcaJpaRepository.save(existingEntity);
+        return modelMapper.map(updatedEntity, Marca.class);
     }
 
 }
