@@ -9,6 +9,7 @@ import tesis.productservices.models.Size;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class ProductRequest {
     private String color;
     private Long categoryId;
     private BigInteger stock;
-    private boolean active;
+    private List<String> imageUrls; // Para múltiples imágenes
     private BigDecimal price;
+    private boolean active;
 }

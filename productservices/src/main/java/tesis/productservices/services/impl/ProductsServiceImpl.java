@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tesis.productservices.dtos.ProductRequest;
 import tesis.productservices.entities.CategoryEntity;
 import tesis.productservices.entities.MarcaEntity;
+import tesis.productservices.entities.ProductImageEntity;
 import tesis.productservices.entities.ProductsEntity;
 import tesis.productservices.models.Products;
 import tesis.productservices.repositories.CategoryJpaRepository;
@@ -77,9 +78,18 @@ public class ProductsServiceImpl implements ProductsService {
         productsEntity.setUpdatedAt(LocalDateTime.now());
         productsEntity.setActive(productRequest.getStock() != null ? productRequest.isActive() : false);
 
+        if (productRequest.getImageUrls() != null && !productRequest.getImageUrls().isEmpty()) {
+            for (String url : productRequest.getImageUrls()) {
+                ProductImageEntity image = new ProductImageEntity();
+                image.setImageUrl(url);
+                image.setProduct(productsEntity);
+                productsEntity.getImages().add(image);
+            }
+        }
         ProductsEntity savedEntity = productsJpaRepository.save(productsEntity);
         return modelMapper.map(savedEntity, Products.class);
     }
+
 
     @Override
     @Transactional
@@ -104,6 +114,20 @@ public class ProductsServiceImpl implements ProductsService {
         existingEntity.setStock(products.getStock());
         existingEntity.setUpdatedAt(LocalDateTime.now());
         existingEntity.setActive(products.getStock() != null ? products.isActive() : false);
+
+        // Actualizar imágenes si se proporcionan
+        if (products.getImageUrls() != null && !products.getImageUrls().isEmpty()) {
+            // Limpiar imágenes existentes para evitar duplicados
+            existingEntity.getImages().clear();
+
+            // Agregar nuevas imágenes
+            for (String url : products.getImageUrls()) {
+                ProductImageEntity image = new ProductImageEntity();
+                image.setImageUrl(url);
+                image.setProduct(existingEntity);
+                existingEntity.getImages().add(image);
+            }
+        }
 
         ProductsEntity updatedEntity = productsJpaRepository.save(existingEntity);
         return modelMapper.map(updatedEntity, Products.class);

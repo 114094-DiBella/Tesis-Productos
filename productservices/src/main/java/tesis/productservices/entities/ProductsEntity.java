@@ -9,6 +9,8 @@ import tesis.productservices.models.Size;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 @Entity
 @Table(name = "products")
@@ -44,6 +46,9 @@ public class ProductsEntity {
 
     @Column(nullable = false)
     private boolean active;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImageEntity> images = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
