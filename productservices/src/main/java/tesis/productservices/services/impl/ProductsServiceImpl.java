@@ -12,6 +12,7 @@ import tesis.productservices.entities.ProductImageEntity;
 import tesis.productservices.entities.ProductsEntity;
 import tesis.productservices.models.Products;
 import tesis.productservices.repositories.CategoryJpaRepository;
+import tesis.productservices.repositories.ImagesJpaRepository;
 import tesis.productservices.repositories.MarcaJpaRepository;
 import tesis.productservices.repositories.ProductsJpaRepository;
 import tesis.productservices.services.ProductsService;
@@ -31,6 +32,8 @@ public class ProductsServiceImpl implements ProductsService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ImagesJpaRepository imagesJpaRepository;
     @Autowired
     private CategoryJpaRepository categoryJpaRepository;
 
@@ -56,7 +59,6 @@ public class ProductsServiceImpl implements ProductsService {
                 .map(entity -> modelMapper.map(entity, Products.class))
                 .orElseThrow(() -> new EntityNotFoundException("No hay productos con ese ID: " + id));
     }
-
     @Override
     @Transactional
     public Products save(ProductRequest productRequest) {
@@ -78,19 +80,18 @@ public class ProductsServiceImpl implements ProductsService {
         productsEntity.setUpdatedAt(LocalDateTime.now());
         productsEntity.setActive(productRequest.getStock() != null ? productRequest.isActive() : false);
 
-        if (productRequest.getImageUrls() != null && !productRequest.getImageUrls().isEmpty()) {
-            for (String url : productRequest.getImageUrls()) {
-                ProductImageEntity image = new ProductImageEntity();
-                image.setImageUrl(url);
+        // Asociar imágenes si se proporcionan IDs
+        if (productRequest.getImageIds() != null && !productRequest.getImageIds().isEmpty()) {
+            List<ProductImageEntity> images = imagesJpaRepository.findByIdIn(productRequest.getImageIds());
+            for (ProductImageEntity image : images) {
                 image.setProduct(productsEntity);
                 productsEntity.getImages().add(image);
             }
         }
+
         ProductsEntity savedEntity = productsJpaRepository.save(productsEntity);
         return modelMapper.map(savedEntity, Products.class);
     }
-
-
     @Override
     @Transactional
     public Products update(ProductRequest products, UUID id) {
@@ -115,15 +116,16 @@ public class ProductsServiceImpl implements ProductsService {
         existingEntity.setUpdatedAt(LocalDateTime.now());
         existingEntity.setActive(products.getStock() != null ? products.isActive() : false);
 
-        // Actualizar imágenes si se proporcionan
-        if (products.getImageUrls() != null && !products.getImageUrls().isEmpty()) {
-            // Limpiar imágenes existentes para evitar duplicados
+        if (products.getImageIds() != null && !products.getImageIds().isEmpty()) {
+            // Remover asociaciones existentes
+            for (ProductImageEntity image : existingEntity.getImages()) {
+                image.setProduct(null);
+            }
             existingEntity.getImages().clear();
 
-            // Agregar nuevas imágenes
-            for (String url : products.getImageUrls()) {
-                ProductImageEntity image = new ProductImageEntity();
-                image.setImageUrl(url);
+            // Agregar nuevas asociaciones
+            List<ProductImageEntity> images = imagesJpaRepository.findByIdIn(products.getImageIds());
+            for (ProductImageEntity image : images) {
                 image.setProduct(existingEntity);
                 existingEntity.getImages().add(image);
             }

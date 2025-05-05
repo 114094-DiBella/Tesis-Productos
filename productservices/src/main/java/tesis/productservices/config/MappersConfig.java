@@ -26,7 +26,30 @@ public class MappersConfig {
      */
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
+
+        // Configurar el mapeo de ProductsEntity a Products
+        mapper.typeMap(ProductsEntity.class, Products.class)
+                .addMappings(mapping -> {
+                    // Saltar el mapeo directo del campo images
+                    mapping.skip(Products::setImageUrls);
+                })
+                .setPostConverter(context -> {
+                    ProductsEntity source = context.getSource();
+                    Products destination = context.getDestination();
+
+                    // Conversión manual de lista de ProductImageEntity a lista de strings de URL
+                    if (source.getImages() != null && !source.getImages().isEmpty()) {
+                        List<String> imageUrls = source.getImages().stream()
+                                .map(ProductImageEntity::getImageUrl)
+                                .collect(Collectors.toList());
+                        destination.setImageUrls(imageUrls);
+                    }
+
+                    return destination;
+                });
+
+        return mapper;
     }
 
     /**

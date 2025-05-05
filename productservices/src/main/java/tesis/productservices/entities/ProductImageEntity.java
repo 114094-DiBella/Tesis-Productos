@@ -21,7 +21,6 @@ public class ProductImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductsEntity product;
-
     private boolean main;
     private int displayOrder;
 }

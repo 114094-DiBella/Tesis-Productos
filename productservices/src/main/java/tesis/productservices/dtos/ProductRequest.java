@@ -21,7 +21,8 @@ public class ProductRequest {
     private String color;
     private Long categoryId;
     private BigInteger stock;
-    private List<String> imageUrls; // Para múltiples imágenes
+    //private List<String> imageUrls; // Para múltiples imágenes
     private BigDecimal price;
     private boolean active;
+    private List<Long> imageIds;
 }
