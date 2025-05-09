@@ -19,6 +19,7 @@ public class SecurityConfig {
         http
                 // Desactivar CSRF
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configure(http))
                 // Permitir acceso a todos los endpoints
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
