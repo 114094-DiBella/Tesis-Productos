@@ -67,6 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryEntity.isPresent()) {
             CategoryEntity categoryEntityUpdate = categoryEntity.get();
             categoryEntityUpdate.setName(category.getName());
+            categoryEntityUpdate.setImageUrl(category.getImageUrl());
             categoryJpaRepository.save(categoryEntityUpdate);
             return modelMapper.map(categoryEntityUpdate, Category.class);
         }
