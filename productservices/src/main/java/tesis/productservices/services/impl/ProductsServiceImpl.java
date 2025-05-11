@@ -142,11 +142,13 @@ public class ProductsServiceImpl implements ProductsService {
             throw new IllegalArgumentException("id is null");
         }
 
-        if (!productsJpaRepository.existsById(id)) {
+        Optional<ProductsEntity> optionalEntity = productsJpaRepository.findById(id);
+        if (optionalEntity.isEmpty()) {
             throw new EntityNotFoundException("No hay productos con ese ID: " + id);
         }
+        optionalEntity.get().setActive(false);
+        productsJpaRepository.save(optionalEntity.get());
 
-        productsJpaRepository.deleteById(id);
     }
 
     private void validateProductDuplicate(ProductRequest productRequest) {
