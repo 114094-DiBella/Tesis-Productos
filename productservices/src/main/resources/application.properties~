@@ -9,10 +9,10 @@ server.port=8080
 app.dev-name=Agustin
 app.dev-email=agustin@example.com
 
-# ===== SQL SERVER CON USUARIO SA =====
-spring.datasource.url=jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=productservices;encrypt=false;trustServerCertificate=true
-spring.datasource.username=sa
-spring.datasource.password=TuPassword123!
+# ===== CONFIGURACIÓN SQL SERVER (BASADA EN TU IDE) =====
+spring.datasource.url=jdbc:sqlserver://DESKTOP-TJK1E5N;databaseName=productservices;instanceName=SQLEXPRESS;encrypt=false;trustServerCertificate=true;integratedSecurity=true
+spring.datasource.username=
+spring.datasource.password=
 spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 # JPA para SQL Server
@@ -21,7 +21,8 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
-# ===== H2 (COMENTADO - para fallback) =====
+# ===== CONFIGURACIÓN H2 (COMENTADA - para desarrollo rápido) =====
+# Descomenta estas líneas si quieres volver a H2
 #spring.datasource.url=jdbc:h2:mem:productdb;DB_CLOSE_ON_EXIT=FALSE
 #spring.datasource.driverClassName=org.h2.Driver
 #spring.datasource.username=sa
@@ -30,14 +31,16 @@ spring.jpa.properties.hibernate.format_sql=true
 #spring.jpa.hibernate.ddl-auto=create-drop
 
 # ===== CONFIGURACIÓN COMÚN =====
+# Logging
 logging.level.org.hibernate.SQL=DEBUG
 logging.level.root=WARN
 
+# Spring JPA común
 spring.jpa.defer-datasource-initialization=true
 spring.sql.init.mode=always
 spring.jpa.open-in-view=false
 
-# H2 Console deshabilitada para SQL Server
+# H2 Console (deshabilitada para SQL Server)
 spring.h2.console.enabled=false
 
 # Health Indicators
