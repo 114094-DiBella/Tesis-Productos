@@ -1,0 +1,38 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-productservices
+    environment:
+      SA_PASSWORD: "TuPassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - product-network
+
+  productservices:
+    build: .
+    container_name: productservices-app
+    depends_on:
+      - sqlserver
+    ports:
+      - "8080:8080"
+    networks:
+      - product-network
+    volumes:
+      - product_images:/app/product-images
+    environment:
+      - JAVA_OPTS=-Dfile.encoding=UTF-8 -Dproject.build.sourceEncoding=UTF-8
+    restart: on-failure
+
+volumes:
+  sqlserver_data:
+  product_images:
+
+networks:
+  product-network:
+    driver: bridge
+
