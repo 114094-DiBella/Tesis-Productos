@@ -33,6 +33,9 @@ RUN ./mvnw clean package -DskipTests \
     -Dproject.reporting.outputEncoding=UTF-8 \
     -Dmaven.compiler.encoding=UTF-8
 
+# Copiar el JAR construido a una ubicación fija
+RUN cp target/productservices-0.0.1-SNAPSHOT.jar app.jar
+
 # Crear directorio para imágenes de productos
 RUN mkdir -p /app/product-images
 
@@ -44,5 +47,5 @@ RUN addgroup --system spring && adduser --system spring --ingroup spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
-# Comando para ejecutar la aplicación
-CMD ["java", "-Dfile.encoding=UTF-8", "-jar", "target/productservices-0.0.1-SNAPSHOT.jar"]
+# Comando para ejecutar la aplicación (CON SLEEP INCLUIDO)
+CMD ["sh", "-c", "sleep 30 && java -Dfile.encoding=UTF-8 -jar app.jar"]
