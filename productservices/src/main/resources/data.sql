@@ -3,6 +3,14 @@ INSERT INTO categories (name,image_url) VALUES ('Jeans', '');
 INSERT INTO categories (name,image_url) VALUES ('Remeras', '');
 INSERT INTO categories (name,image_url) VALUES ('Vestidos', '');
 INSERT INTO categories (name,image_url) VALUES ('Casual', '');
+INSERT INTO categories (name,image_url) VALUES ('Abrigos', '');
+
+INSERT INTO categories (name,image_url) VALUES ('Sweaters', '');
+INSERT INTO categories (name,image_url) VALUES ('Pantalones', '');
+INSERT INTO categories (name,image_url) VALUES ('Camisas', '');
+INSERT INTO categories (name,image_url) VALUES ('Chombas', '');
+INSERT INTO categories (name,image_url) VALUES ('Camperas', '');
+
 INSERT INTO marcas (name) VALUES ('Nike');
 INSERT INTO marcas (name) VALUES ('Adidas');
 INSERT INTO marcas (name) VALUES ('Puma');
